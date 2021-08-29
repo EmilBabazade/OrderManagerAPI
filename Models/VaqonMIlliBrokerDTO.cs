@@ -15,6 +15,6 @@ namespace OrderManagerAPI.Models
         public string Dokument { get; set; }
 
         [Required]
-        public DocTypeEnum DokumentNovu { get; set; }
+        public string DokumentNovu { get; set; }
     }
 }

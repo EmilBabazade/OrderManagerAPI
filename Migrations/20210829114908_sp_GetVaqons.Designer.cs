@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderManagerAPI.Data;
 
 namespace OrderManagerAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210829114908_sp_GetVaqons")]
+    partial class sp_GetVaqons
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,15 +42,15 @@ namespace OrderManagerAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d0fdf2db-521a-4744-9efa-a90066cc4f15",
-                            ConcurrencyStamp = "e009478d-803f-4136-a9db-e2bd2a58617d",
+                            Id = "8e924c69-b737-4d1c-b420-061de3548c19",
+                            ConcurrencyStamp = "262157a9-f4d3-46a8-83b4-9a4a97335023",
                             Name = "Standart",
                             NormalizedName = "STANDART"
                         },
                         new
                         {
-                            Id = "8daa54dc-46ea-4c55-982a-a019b85bd7ea",
-                            ConcurrencyStamp = "f898b833-cab2-484b-bf59-5f8168028a04",
+                            Id = "21568180-2ecd-4b23-bb3b-817252c0237f",
+                            ConcurrencyStamp = "af30c711-7671-44ed-a8bd-75d320ff8b21",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
