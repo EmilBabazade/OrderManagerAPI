@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using OrderManagerAPI.Data;
 using OrderManagerAPI.Models;
+using OrderManagerAPI.MappingProfiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +48,7 @@ namespace OrderManagerAPI
             //mapper
             var mapConf = new MapperConfiguration(mc =>
             {
-                mc.AddProfile(new MappigProfile());
+                mc.AddProfile(new UserProfile());
             });
             var mapper = mapConf.CreateMapper();
             services.AddSingleton(mapper);
