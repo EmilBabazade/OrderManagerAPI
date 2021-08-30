@@ -54,63 +54,6 @@ namespace OrderManagerAPI.Controllers
             return StatusCode(201);
         }
 
-        /// only dev
-        //[HttpGet]
-        //public async Task<IActionResult> Seed()
-        //{
-        //    var users = new List<User>();
-        //    var userCount = 0;
-        //    var adminUser = new User
-        //    {
-        //        FirstName = "Bob",
-        //        LastName = "Bobson",
-        //        Email = "Bob@bob.com",
-        //        UserName = "Bob@bob.com"
-        //    };
-        //    var result = await _userManager.CreateAsync(adminUser, "egegG123@");
-        //    if (result.Succeeded)
-        //    {
-        //        userCount++;
-        //        users.Add(adminUser);
-        //    } 
-        //    else
-        //    {
-        //        return new JsonResult( new
-        //        {
-        //            User = adminUser,
-        //            Err = result.Errors
-        //        });
-        //    }
-
-        //    var standardUser = new User
-        //    {
-        //        FirstName = "Don",
-        //        LastName = "DOnson",
-        //        Email = "Don@gffg.com",
-        //        UserName = "Don@gffg.com",
-        //    };
-        //    result = await _userManager.CreateAsync(standardUser, "eedS43!@");
-        //    if (result.Succeeded)
-        //    {
-        //        userCount++;
-        //        users.Add(standardUser);
-        //    }
-        //    else
-        //    {
-        //        return new JsonResult(new
-        //        {
-        //            User = standardUser,
-        //            Err = result.Errors
-        //        });
-        //    }
-
-        //    return new JsonResult(new
-        //    {
-        //        Count = userCount,
-        //        Users = users
-        //    });
-        //}
-
         [HttpPost]
         public async Task<IActionResult> Login(UserLoginModel userModel)
         {

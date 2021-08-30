@@ -19,7 +19,7 @@
     ],
     "languageVersion": "8.0",
     "platform": "",
-    "allowUnsafe": false,
+    "allowUnsafe": true,
     "warningsAsErrors": false,
     "optimize": false,
     "keyFile": "",

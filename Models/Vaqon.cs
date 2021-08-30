@@ -13,10 +13,11 @@ namespace OrderManagerAPI.Models
         [Key, Required]
         public int Id { get; set; }
 
-        public string FilePath { get; set; }
+        #nullable enable
+        public string? FilePath { get; set; }
 
-        public DocTypeEnum DocType { get; set; }
+        public DocTypeEnum? DocType { get; set; }
 
-        public TypeEnum Type { get; set; }
+        public TypeEnum? Type { get; set; }
     }
 }

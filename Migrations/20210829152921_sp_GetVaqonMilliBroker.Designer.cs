@@ -10,8 +10,8 @@ using OrderManagerAPI.Data;
 namespace OrderManagerAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210829120146_sp_InsertVaqonMIlliBroker")]
-    partial class sp_InsertVaqonMIlliBroker
+    [Migration("20210829152921_sp_GetVaqonMilliBroker")]
+    partial class sp_GetVaqonMilliBroker
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,15 +42,15 @@ namespace OrderManagerAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d0fdf2db-521a-4744-9efa-a90066cc4f15",
-                            ConcurrencyStamp = "e009478d-803f-4136-a9db-e2bd2a58617d",
+                            Id = "01702046-c1f6-4355-bfdf-e2b4979ea23b",
+                            ConcurrencyStamp = "6be2e8db-5531-40f3-9d6e-2883933e3f6e",
                             Name = "Standart",
                             NormalizedName = "STANDART"
                         },
                         new
                         {
-                            Id = "8daa54dc-46ea-4c55-982a-a019b85bd7ea",
-                            ConcurrencyStamp = "f898b833-cab2-484b-bf59-5f8168028a04",
+                            Id = "fdb293e2-1e98-413e-8510-6c7d102f2204",
+                            ConcurrencyStamp = "9dd3afb8-68d9-4ede-a798-c4caa774f208",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });

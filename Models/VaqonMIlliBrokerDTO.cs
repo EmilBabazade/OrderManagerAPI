@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace OrderManagerAPI.Models
 {
-    public class VaqonMIlliBrokerDTO
+    public class VaqonMIlliBrokerDTO : VaqonDTO
     {
-        [Required]
-        public int Id { get; set; }
-
         [Required]
         public string Dokument { get; set; }
 
