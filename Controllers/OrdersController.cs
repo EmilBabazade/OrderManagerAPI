@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using OrderManagerAPI.Data;
 using OrderManagerAPI.Models;
@@ -37,7 +38,74 @@ namespace OrderManagerAPI.Controllers
 
         [HttpPost, Authorize(Roles = "Administrator")]
         public async Task<ActionResult> CreateOrder(OrderEditDTO order) {
-            throw new NotImplementedException();
+            try
+            {
+                await InsertOrder(order);
+                return StatusCode(201);
+            }
+            catch (SqlException)
+            {
+                return StatusCode(400);
+            }
+            catch (Exception)
+            {
+                return StatusCode(400);
+            }
+        }
+
+        private async Task<ActionResult> InsertOrder(OrderEditDTO order)
+        {
+            XidmetEnum? xidmet = StringToXidmet(order.Xidmet);
+            CurrencyEnum? vahid = StringToVahid(order.Vahid);
+            try
+            {
+                await _context
+                    .Orders
+                    .FromSqlInterpolated($"InsertOrder {xidmet}, {vahid}, {order.Miqdar}, {order.Qiymet}, {order.Tarix}, {order.VaqonId}")
+                    .ToListAsync();
+            }
+            catch (InvalidOperationException ex)
+              when (ex.Message == "The required column 'Id' was not present in the results of a 'FromSql' operation.")
+            {
+                // fromsqlraw or fromsqlinterpolated doesn't run if you don't call .ToList or .ToListAsync afterward
+                // it doesn't work even if you call _context.SaveChanges or .SaveChangesAsync at some other line
+                // idk why, i don't care why, but calling .ToListAsync() at end throws this exception
+                // since it tries to conver the result of query to List<Vaqon> object
+                // but InsertVaqonMB stored procedure INSERTS the data and does not return anything
+            }
+            return Ok();
+        }
+
+        private CurrencyEnum? StringToVahid(string vahid)
+        {
+            switch(vahid.ToUpper())
+            {
+                case "AZN":
+                    return CurrencyEnum.AZN;
+                case "EUR":
+                    return CurrencyEnum.EUR;
+                case "RUB":
+                    return CurrencyEnum.RUB;
+                case "USD":
+                    return CurrencyEnum.USD;
+                default:
+                    return null;
+            }
+        }
+
+        private XidmetEnum? StringToXidmet(string xidmet)
+        {
+            switch (xidmet.ToLower())
+            {
+                case "gomrukleme":
+                    return XidmetEnum.GOMRUKLEME;
+                case "mal_qebulu":
+                    return XidmetEnum.MAL_QEBULU;
+                case "saxlanc":
+                    return XidmetEnum.SAXLANC;
+                default:
+                    return null;
+            }
         }
 
         private static OrderDisplayDTO OrderToDisplayDTO(Order order)

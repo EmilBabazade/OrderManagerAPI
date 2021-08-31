@@ -70,17 +70,16 @@ namespace OrderManagerAPI.Controllers
                     await InsertVaqonMB(vaqonMB);
                     return StatusCode(201);
                 }
+                return StatusCode(400);
             }
             catch (SqlException)
             {
                 return StatusCode(400);
             }
-            catch (Exception ex) when(ex.Message == "Invalid Document Type" || ex.Message == "Invalid Type")
+            catch (Exception)
             {
                 return StatusCode(400);
             }
-            
-            return StatusCode(400);
         }
 
         private async Task<ActionResult> InsertVaqonMBK(VaqonBrokerXidmetindenKecmiDTO vaqon)

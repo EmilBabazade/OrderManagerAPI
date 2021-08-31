@@ -8,9 +8,6 @@ namespace OrderManagerAPI.Models
 {
     public class OrderEditDTO
     {
-        [Key, Required]
-        public int Id { get; set; }
-
         [Required]
         public string Xidmet { get; set; }
 
@@ -23,8 +20,8 @@ namespace OrderManagerAPI.Models
         [Required]
         public decimal Qiymet { get; set; }
 
-        [Required, DataType(DataType.Date)]
-        public DateTime CreationDate { get; set; }
+        [Required]
+        public String Tarix { get; set; }
 
         [Required]
         public int VaqonId { get; set; }
