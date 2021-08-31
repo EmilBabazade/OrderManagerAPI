@@ -12,10 +12,10 @@ namespace OrderManagerAPI.Models
         public int Id { get; set; }
 
         [Required]
-        public XidmetEnum Xidmet { get; set; }
+        public string Xidmet { get; set; }
 
         [Required]
-        public CurrencyEnum Vahid { get; set; }
+        public string Vahid { get; set; }
 
         [Required]
         public int Miqdar { get; set; }

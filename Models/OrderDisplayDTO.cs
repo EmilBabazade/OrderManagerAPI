@@ -9,13 +9,13 @@ namespace OrderManagerAPI.Models
     public class OrderDisplayDTO
     {
         [Key, Required]
-        public int Id { get; set; }
+        public int Sifaris { get; set; }
 
         [Required]
-        public XidmetEnum Xidmet { get; set; }
+        public string Xidmet { get; set; }
 
         [Required]
-        public CurrencyEnum Vahid { get; set; }
+        public string Vahid { get; set; }
 
         [Required]
         public int Miqdar { get; set; }
@@ -24,10 +24,10 @@ namespace OrderManagerAPI.Models
         public decimal Qiymet { get; set; }
 
         [Required, DataType(DataType.Date)]
-        public DateTime CreationDate { get; set; }
+        public DateTime Tarix { get; set; }
 
         [Required]
-        public int VaqonId { get; set; }
+        public int Vaqon { get; set; }
 
         [Required]
         public decimal TotalQiymet { get; set; }
