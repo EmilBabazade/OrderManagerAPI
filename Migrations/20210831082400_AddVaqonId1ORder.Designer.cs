@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderManagerAPI.Data;
 
 namespace OrderManagerAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210831082400_AddVaqonId1ORder")]
+    partial class AddVaqonId1ORder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,15 +42,15 @@ namespace OrderManagerAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "18072b45-1b60-4c67-b957-f876b6e7b83b",
-                            ConcurrencyStamp = "3cf3a5ae-a8a6-476c-ae26-c34056bab8ad",
+                            Id = "7818df44-10dc-45cf-af44-010094f40d9e",
+                            ConcurrencyStamp = "3bd7b2d1-0757-48f9-9497-3f77a209cba0",
                             Name = "Standart",
                             NormalizedName = "STANDART"
                         },
                         new
                         {
-                            Id = "dae00591-ecad-4c34-ae9c-4078375d7726",
-                            ConcurrencyStamp = "140705e4-215f-4e3f-8a7b-acfea0e3d89e",
+                            Id = "a2a3c607-d2bf-4b95-ae14-696748be2a52",
+                            ConcurrencyStamp = "d4ce6808-7b88-45aa-a0a8-c2a63474cb91",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -77,10 +79,6 @@ namespace OrderManagerAPI.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("EndDate")
-                        .IsRequired()
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Miqdar")
                         .HasColumnType("int");
 
@@ -94,6 +92,10 @@ namespace OrderManagerAPI.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("VaqonId1")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("VaqonId2")
                         .HasColumnType("int");
 
                     b.Property<int>("Xidmet")
@@ -101,7 +103,7 @@ namespace OrderManagerAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("VaqonId1");
+                    b.HasIndex("VaqonId2");
 
                     b.ToTable("Orders");
                 });
@@ -192,7 +194,7 @@ namespace OrderManagerAPI.Migrations
                 {
                     b.HasOne("OrderManagerAPI.Models.Vaqon", "Vaqon")
                         .WithMany()
-                        .HasForeignKey("VaqonId1");
+                        .HasForeignKey("VaqonId2");
                 });
 #pragma warning restore 612, 618
         }

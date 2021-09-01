@@ -26,6 +26,9 @@ namespace OrderManagerAPI.Models
         [Required, DataType(DataType.Date)]
         public DateTime CreationDate { get; set; }
 
+        [Required, DataType(DataType.Date)]
+        public DateTime? EndDate { get; set; }
+
         [Required]
         public int VaqonId { get; set; }
 

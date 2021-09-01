@@ -7,6 +7,7 @@ using OrderManagerAPI.Data;
 using OrderManagerAPI.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -40,14 +41,15 @@ namespace OrderManagerAPI.Controllers
         public async Task<ActionResult> CreateOrder(OrderEditDTO order) {
             try
             {
+                // TODO: check vaqon doesn't belong to another order
                 await InsertOrder(order);
                 return StatusCode(201);
             }
-            catch (SqlException)
+            catch (SqlException ex) 
             {
                 return StatusCode(400);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(400);
             }
@@ -55,13 +57,29 @@ namespace OrderManagerAPI.Controllers
 
         private async Task<ActionResult> InsertOrder(OrderEditDTO order)
         {
-            XidmetEnum? xidmet = StringToXidmet(order.Xidmet);
-            CurrencyEnum? vahid = StringToVahid(order.Vahid);
+            // check vaqon doesn't belong to any order
+            var vaqons = await _context
+                .Vaqons
+                .FromSqlRaw("GetUnusedVaqonIds")
+                .Select(v => v.Id)
+                .ToListAsync();
+            if (!vaqons.Contains(order.VaqonId))
+                throw new Exception();
+            // insert the order to the database
+            var xidmet = new SqlParameter("@Xidmet", StringToXidmet(order.Xidmet));
+            var vahid = new SqlParameter("@Vahod", StringToVahid(order.Vahid));
+            var miqdar = new SqlParameter("@Miqdar", order.Miqdar);
+            var qiymet = new SqlParameter("@Qiymet", order.Qiymet);
+            var creationDate = new SqlParameter("@CreationDate", order.Tarix);
+            var vaqonId = new SqlParameter("@VaqonId", order.VaqonId);
+            var orderId = new SqlParameter("@OrderId", SqlDbType.Int) { Direction = ParameterDirection.Output };
             try
             {
                 await _context
                     .Orders
-                    .FromSqlInterpolated($"InsertOrder {xidmet}, {vahid}, {order.Miqdar}, {order.Qiymet}, {order.Tarix}, {order.VaqonId}")
+                    .FromSqlRaw("InsertOrder" +
+                        " @Xidmet={0}, @Vahid={1}, @Miqdar={2}, @Qiymet={3}, @CreationDate={4}, @VaqonId={5}, @OrderId={6} output",
+                        xidmet, vahid, miqdar, qiymet, creationDate, vaqonId, orderId)
                     .ToListAsync();
             }
             catch (InvalidOperationException ex)
@@ -73,6 +91,16 @@ namespace OrderManagerAPI.Controllers
                 // since it tries to conver the result of query to List<Vaqon> object
                 // but InsertVaqonMB stored procedure INSERTS the data and does not return anything
             }
+            // update the order id of the vaqon
+            try
+            {
+                await _context
+                    .Vaqons
+                    .FromSqlInterpolated($"UpdateOrderIdOfVaqonId {(int)orderId.Value}")
+                    .ToListAsync();
+            }
+            catch (InvalidOperationException ex)
+                when (ex.Message == "The required column 'Id' was not present in the results of a 'FromSql' operation.") { }
             return Ok();
         }
 

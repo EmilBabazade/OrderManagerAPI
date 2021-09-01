@@ -17,6 +17,10 @@
     <Compile Remove="Migrations\20210829114153_OrderVaqonModels.Designer.cs" />
     <Compile Remove="Migrations\20210829114323_OrderVaqonModels.cs" />
     <Compile Remove="Migrations\20210829114323_OrderVaqonModels.Designer.cs" />
+    <Compile Remove="Migrations\20210831082136_vaqonid1.cs" />
+    <Compile Remove="Migrations\20210831082136_vaqonid1.Designer.cs" />
+    <Compile Remove="Migrations\20210831082314_vaqonid1.cs" />
+    <Compile Remove="Migrations\20210831082314_vaqonid1.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,6 +30,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.15" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.15" />
+    <PackageReference Include="microsoft.data.sqlclient" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.15">
       <PrivateAssets>all</PrivateAssets>

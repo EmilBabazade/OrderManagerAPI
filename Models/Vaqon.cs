@@ -19,5 +19,7 @@ namespace OrderManagerAPI.Models
         public DocTypeEnum? DocType { get; set; }
 
         public TypeEnum? Type { get; set; }
+
+        public int? OrderId { get; set; }
     }
 }

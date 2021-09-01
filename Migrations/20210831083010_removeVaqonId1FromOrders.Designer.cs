@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderManagerAPI.Data;
 
 namespace OrderManagerAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210831083010_removeVaqonId1FromOrders")]
+    partial class removeVaqonId1FromOrders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,15 +42,15 @@ namespace OrderManagerAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "18072b45-1b60-4c67-b957-f876b6e7b83b",
-                            ConcurrencyStamp = "3cf3a5ae-a8a6-476c-ae26-c34056bab8ad",
+                            Id = "f7a14655-e874-46b3-839a-2cec561da1e9",
+                            ConcurrencyStamp = "124e105c-3fa3-4ec1-9d5c-965e7734e71f",
                             Name = "Standart",
                             NormalizedName = "STANDART"
                         },
                         new
                         {
-                            Id = "dae00591-ecad-4c34-ae9c-4078375d7726",
-                            ConcurrencyStamp = "140705e4-215f-4e3f-8a7b-acfea0e3d89e",
+                            Id = "18b5a8ce-342e-466c-b05d-c729df58c8b8",
+                            ConcurrencyStamp = "4bbc7bbf-7974-41c5-991e-32dba5fe409d",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -75,10 +77,6 @@ namespace OrderManagerAPI.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("EndDate")
-                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Miqdar")

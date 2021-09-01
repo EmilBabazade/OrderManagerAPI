@@ -81,6 +81,10 @@
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[3.1.5, )"
+            },
+            "microsoft.data.sqlclient": {
+              "target": "Package",
+              "version": "[3.0.0, )"
             }
           },
           "imports": [
