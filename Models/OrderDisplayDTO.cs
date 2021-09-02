@@ -31,5 +31,7 @@ namespace OrderManagerAPI.Models
 
         [Required]
         public decimal TotalQiymet { get; set; }
+
+        public bool? isPaid { get; set; }
     }
 }

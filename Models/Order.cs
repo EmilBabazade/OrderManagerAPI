@@ -29,6 +29,8 @@ namespace OrderManagerAPI.Models
         [Required, DataType(DataType.Date)]
         public DateTime? EndDate { get; set; }
 
+        public bool? IsPaid { get; set; }
+
         [Required]
         public int VaqonId { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 
 namespace OrderManagerAPI.Controllers
 {
+    [EnableCors(Startup.AllowedOrigins)]
     [Route("api/[controller]/[action]"), ApiController]
     public class AccountsController : ControllerBase
     {
@@ -27,17 +29,6 @@ namespace OrderManagerAPI.Controllers
             _mapper = mapper;
             _userManager = userManager;
             _jwtSettings = configuration.GetSection("JwtSettings");
-        }
-
-        [Authorize(Roles = "Standart"), HttpGet]
-        public String Test2()
-        {
-            return "accounts controller";
-        }
-
-        public String Test()
-        {
-            return "hello";
         }
 
         [HttpPost, Authorize(Roles = "Administrator")]
@@ -64,9 +55,13 @@ namespace OrderManagerAPI.Controllers
                 var claims = GetClaims(user);
                 var tokenOptions = GenerateTokenOptions(signingCredentials, await claims);
                 var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-                return Ok(token);
+                return new JsonResult(new {
+                    Token = token,
+                    Name = user.FirstName,
+                    Lastname = user.LastName
+                });
             }
-            return Unauthorized("Invalid Authentication");
+            return StatusCode(401);
         }
 
         private async Task<List<Claim>> GetClaims(User user)

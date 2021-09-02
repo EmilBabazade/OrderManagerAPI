@@ -32,8 +32,21 @@ namespace OrderManagerAPI
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+        public const string AllowedOrigins = "frontEnd";
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: AllowedOrigins,
+                        builder => {
+                            builder
+                                .WithOrigins("http://localhost:8000")
+                                .AllowAnyHeader()
+                                .AllowCredentials()
+                                .AllowAnyMethod()
+                                .Build();
+                        });
+            });
             services.AddControllers();
             services.AddDbContext<ApplicationDbContext>(options => 
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -81,8 +94,13 @@ namespace OrderManagerAPI
 
             app.UseHttpsRedirection();
 
-            app.UseRouting();
+            
 
+            app.UseRouting();
+            if (env.IsDevelopment())
+            {
+                app.UseCors(AllowedOrigins);
+            }
             app.UseAuthentication();
             app.UseAuthorization();
 

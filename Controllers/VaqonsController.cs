@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace OrderManagerAPI.Controllers
 {
+    [EnableCors(Startup.AllowedOrigins)]
     [Route("api/[controller]")]
     [ApiController]
     public class VaqonsController : ControllerBase

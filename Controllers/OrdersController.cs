@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -13,7 +14,8 @@ using System.Threading.Tasks;
 
 namespace OrderManagerAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [EnableCors(Startup.AllowedOrigins)]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class OrdersController : ControllerBase
     {
@@ -35,6 +37,30 @@ namespace OrderManagerAPI.Controllers
                 .ToListAsync();
             // return what you got
             return orders;
+        }
+
+        [HttpGet, Authorize(Roles = "Standart")]
+        public async Task<IActionResult> GetTotalBorc()
+        {
+            // get orders
+            var orders = await _context
+                .Orders
+                .FromSqlRaw("GetOrders")
+                .Select(order => OrderToDisplayDTO(order))
+                .ToListAsync();
+            // calculate total borc
+            decimal totalBorc = 0M;
+            foreach(var order in orders)
+            {
+                if(order.isPaid == null || (order.isPaid != null && order.isPaid == false))
+                {
+                    totalBorc += order.TotalQiymet;
+                }
+            }
+            // return total borc
+            return new JsonResult(new {
+                Borc = totalBorc
+            });
         }
 
         [HttpPost, Authorize(Roles = "Administrator")]
@@ -177,6 +203,7 @@ namespace OrderManagerAPI.Controllers
                 Qiymet = order.Qiymet,
                 Tarix = order.CreationDate,
                 Vaqon = order.VaqonId,
+                isPaid = order.IsPaid,
                 TotalQiymet = order.Miqdar * order.Qiymet
             };
         }
