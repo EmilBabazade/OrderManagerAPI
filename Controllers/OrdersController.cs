@@ -27,16 +27,32 @@ namespace OrderManagerAPI.Controllers
         }
 
         [HttpGet, Authorize(Roles = "Standart")]
-        public async Task<List<OrderDisplayDTO>> GetOrders()
+        public async Task<List<OrderDisplayDTO>> GetOrders(string? startDate, string? endDate)
         {
-            // call get orders sp
-            var orders = await _context
+            if (!String.IsNullOrEmpty(startDate) && !String.IsNullOrEmpty(endDate))
+            {
+                // get orders created after startDate and before endDate
+                return await _context
+                    .Orders
+                    .FromSqlInterpolated($"GetOrdersBetweenStartAndEndDate {DateTime.Parse(startDate)}, {DateTime.Parse(endDate)}")
+                    .Select(order => OrderToDisplayDTO(order))
+                    .ToListAsync();
+            }
+            if (!String.IsNullOrEmpty(startDate))
+            {
+                // get orders created after startDate
+                return await _context
+                    .Orders
+                    .FromSqlInterpolated($"GetOrdersBiggerThanStartDate {DateTime.Parse(startDate)}")
+                    .Select(order => OrderToDisplayDTO(order))
+                    .ToListAsync();
+            }
+            // get orders
+            return await _context
                 .Orders
                 .FromSqlRaw("GetOrders")
                 .Select(order => OrderToDisplayDTO(order))
                 .ToListAsync();
-            // return what you got
-            return orders;
         }
 
         [HttpGet, Authorize(Roles = "Standart")]
@@ -67,7 +83,6 @@ namespace OrderManagerAPI.Controllers
         public async Task<ActionResult> CreateOrder(OrderEditDTO order) {
             try
             {
-                // TODO: check vaqon doesn't belong to another order
                 await InsertOrder(order);
                 return StatusCode(201);
             }
@@ -81,7 +96,33 @@ namespace OrderManagerAPI.Controllers
             }
         }
 
-        private async Task<ActionResult> InsertOrder(OrderEditDTO order)
+        [HttpPost, Authorize(Roles = "Administrator")]
+        public async Task<ActionResult> PayOrder(OrderPayDTO orderInfo)
+        {
+            try
+            {
+                await _context
+                    .Orders
+                    .FromSqlInterpolated($"PayOrder {orderInfo.Id}, {DateTime.Parse(orderInfo.EndDate)}")
+                    .ToListAsync();
+            }
+            catch (InvalidOperationException ex)
+              when (ex.Message == "The required column 'Id' was not present in the results of a 'FromSql' operation.")
+            {
+                // fromsqlraw or fromsqlinterpolated doesn't run if you don't call .ToList or .ToListAsync afterward
+                // it doesn't work even if you call _context.SaveChanges or .SaveChangesAsync at some other line
+                // idk why, i don't care why, but calling .ToListAsync() at end throws this exception
+                // since it tries to conver the result of query to List<Vaqon> object
+                // but InsertVaqonMB stored procedure INSERTS the data and does not return anything
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500);
+            }
+            return Ok();
+        }
+
+            private async Task<ActionResult> InsertOrder(OrderEditDTO order)
         {
             // check vaqon doesn't belong to any order
             var vaqons = await _context
