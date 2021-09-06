@@ -18,5 +18,5 @@
 
 ## Ports
 Default port settings should work, but if they don't or you want to change them for some reaosn:
-1. Make sure `BACKEND/Properities/launchSettings.json` `sslPort` value and `FRONTEND/app/core/port.service.js` controller return value are both the same
-2. Make sure PORT value in `FRONTEND/package.json` `npm start` script and `BACKEND/appsettings.json` `FrontEndPort` value are the same
+1. Make sure `https://github.com/EmilBabazade/OrderManagerAPI/Properities/launchSettings.json` `sslPort` value and `https://github.com/EmilBabazade/OrderManagerFrontEnd/app/core/port.service.js` controller return value are both the same
+2. Make sure PORT value in `https://github.com/EmilBabazade/OrderManagerFrontEnd/package.json` `npm start` script and `https://github.com/EmilBabazade/OrderManagerAPI/appsettings.json` `FrontEndPort` value are the same
