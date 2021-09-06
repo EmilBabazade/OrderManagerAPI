@@ -21,6 +21,10 @@
     <Compile Remove="Migrations\20210831082136_vaqonid1.Designer.cs" />
     <Compile Remove="Migrations\20210831082314_vaqonid1.cs" />
     <Compile Remove="Migrations\20210831082314_vaqonid1.Designer.cs" />
+    <Compile Remove="Migrations\20210906070751_GetOrdersSP.cs" />
+    <Compile Remove="Migrations\20210906070751_GetOrdersSP.Designer.cs" />
+    <Compile Remove="Migrations\20210906070859_StoredProcedures.cs" />
+    <Compile Remove="Migrations\20210906070859_StoredProcedures.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

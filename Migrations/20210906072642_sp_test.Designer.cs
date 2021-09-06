@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderManagerAPI.Data;
 
 namespace OrderManagerAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210906072642_sp_test")]
+    partial class sp_test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,15 +42,15 @@ namespace OrderManagerAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "bdae4ad6-e4dd-4ebf-992c-d448fd5d19f7",
-                            ConcurrencyStamp = "1f267651-4354-4eb1-9c6a-44dd8c57934b",
+                            Id = "e0574493-1e7a-489b-97c9-3241fa6765da",
+                            ConcurrencyStamp = "0338ffab-14bb-4876-9cde-ae3729306099",
                             Name = "Standart",
                             NormalizedName = "STANDART"
                         },
                         new
                         {
-                            Id = "23396fba-9cb0-4ddd-a265-49b0637ad9c9",
-                            ConcurrencyStamp = "adfd30ea-3aa9-44b6-8f79-a33b6170775d",
+                            Id = "1ea1f782-530a-40b1-8370-38761df0e137",
+                            ConcurrencyStamp = "793c46f9-d43b-4353-b544-7e55061546ce",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });

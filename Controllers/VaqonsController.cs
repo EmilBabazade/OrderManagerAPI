@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -8,6 +9,8 @@ using OrderManagerAPI.Data;
 using OrderManagerAPI.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,33 +22,102 @@ namespace OrderManagerAPI.Controllers
     public class VaqonsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _env;
 
-        public VaqonsController(ApplicationDbContext context)
+        public VaqonsController(ApplicationDbContext context, IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
+        }
+
+        public sealed class DeleteData
+        {
+            [Required]
+            public int VaqonId { get; set; }
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> DeleteVaqon(DeleteData data)
+        {
+            // check if it doesn't belong to any order
+            var orders = await _context
+                .Orders
+                .FromSqlRaw("GetOrders")
+                .ToListAsync();
+            foreach(var order in orders)
+            {
+                if(order.VaqonId == data.VaqonId)
+                {
+                    return StatusCode(400);
+                }
+            }
+            // delete vaqon
+            try
+            {
+                await _context
+                    .Vaqons
+                    .FromSqlInterpolated($"DeleteVaqon {data.VaqonId}")
+                    .ToListAsync();
+            }
+            catch (InvalidOperationException ex)
+              when (ex.Message == "The required column 'Id' was not present in the results of a 'FromSql' operation.")
+            { }
+            return Ok();
         }
 
         [HttpGet]
         [Authorize(Roles = "Standart")]
-        public async Task<IEnumerable<VaqonDTO>> GetVaqons(bool getMilliBrokerdenKecmis = false)
+        public async Task<IEnumerable<VaqonDTO>> GetVaqons(
+            bool getMilliBrokerdenKecmis = false,
+            bool getWithoutOrderId = false,
+            bool getBoth = false)
         {
-            IEnumerable<VaqonDTO> vaqons;
+            if (getBoth && getWithoutOrderId)
+            {
+                return await _context
+                    .Vaqons
+                    .FromSqlRaw("GetUnusedVaqonIds")
+                    .Select(v => VaqonToDTOBothBroker(v))
+                    .ToListAsync();
+            }
+            if (getBoth)
+            {
+                return await _context
+                    .Vaqons
+                    .FromSqlRaw("GetVaqons")
+                    .Select(v => VaqonToDTOBothBroker(v))
+                    .ToListAsync();
+            }
+            if (getWithoutOrderId && getMilliBrokerdenKecmis)
+            {
+                return await _context
+                    .Vaqons
+                    .FromSqlRaw("GetVaqonMBKWithoutOrderId")
+                    .Select(v => VaqonToMilliBrokerKecmisDTO(v))
+                    .ToListAsync();
+            }
+            if (getWithoutOrderId)
+            {
+                return await _context
+                    .Vaqons
+                    .FromSqlRaw("GetVaqonMBWithoutOrderId")
+                    .Select(v => VaqonToMilliBrokerDTO(v))
+                    .ToListAsync();
+            }
             if (getMilliBrokerdenKecmis)
             {
-                vaqons = await _context
+                return await _context
                     .Vaqons
                     .FromSqlRaw("GetVaqonsMBK")
                     .Select(v => VaqonToMilliBrokerKecmisDTO(v))
                     .ToListAsync();
-            } else
-            {
-                vaqons = await _context
-                    .Vaqons
-                    .FromSqlRaw("GetVaqonsMB")
-                    .Select(v => VaqonToMilliBrokerDTO(v))
-                    .ToListAsync();
-            }
-            return vaqons;
+            } 
+            return await _context
+                .Vaqons
+                .FromSqlRaw("GetVaqonsMB")
+                .Select(v => VaqonToMilliBrokerDTO(v))
+                .ToListAsync();
         }
 
 #nullable enable
@@ -116,6 +188,20 @@ namespace OrderManagerAPI.Controllers
 
         private async Task<ActionResult> InsertVaqonMB(VaqonMIlliBrokerDTO vaqon)
         {
+            // check file exists
+            // file creation is wonky 
+            //var filePaths = Directory.GetFiles(Path.Combine(_env.WebRootPath, "Source"));
+            //var fileExists = false;
+            //foreach(var path in filePaths)
+            //{
+            //    if(Path.GetFileName(path) == vaqon.Dokument)
+            //    {
+            //        fileExists = true;
+            //    }
+            //}
+            //if (!fileExists)
+            //    return StatusCode(400);
+            // Insert vaqon to DB
             var docType = StringToFileType(vaqon.DokumentNovu);
             try
             {
@@ -167,6 +253,24 @@ namespace OrderManagerAPI.Controllers
                 Id = v.Id,
                 DokumentNovu = docType,
                 Dokument = v.FilePath
+            };
+        }
+
+        private static VaqonDTOBothBroker VaqonToDTOBothBroker(Vaqon v)
+        {
+            string? type = null;
+            if (v.Type == TypeEnum.ITXAL)
+                type = "itxal";
+            if (v.Type == TypeEnum.QISA_ITXAL)
+                type = "qisa_itxal";
+            string? docType = v.DocType == DocTypeEnum.QAIME
+                ? "qaime" : null;
+            return new VaqonDTOBothBroker
+            {
+                Id = v.Id,
+                DokumentNovu = docType,
+                Dokument = v.FilePath,
+                Nov = type
             };
         }
     }

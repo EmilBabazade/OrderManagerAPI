@@ -66,9 +66,9 @@ namespace OrderManagerAPI.Controllers
                 .ToListAsync();
             // calculate total borc
             decimal totalBorc = 0M;
-            foreach(var order in orders)
+            foreach (var order in orders)
             {
-                if(order.isPaid == null || (order.isPaid != null && order.isPaid == false))
+                if (order.isPaid == null || (order.isPaid != null && order.isPaid == false))
                 {
                     totalBorc += order.TotalQiymet;
                 }
@@ -77,6 +77,30 @@ namespace OrderManagerAPI.Controllers
             return new JsonResult(new {
                 Borc = totalBorc
             });
+        }
+
+        public sealed class DeleteData {
+            public int OrderId { get; set; }
+        }
+
+        [HttpDelete, Authorize(Roles = "Administrator")]
+        public async Task<ActionResult> DeleteOrder(DeleteData data)
+        {
+            try
+            {
+                await _context
+                    .Orders
+                    .FromSqlInterpolated($"DeleteOrder {data.OrderId}")
+                    .ToListAsync();
+            }
+            catch (InvalidOperationException ex)
+              when (ex.Message == "The required column 'Id' was not present in the results of a 'FromSql' operation.")
+            { }
+            catch (Exception ex)
+            {
+                return StatusCode(400);
+            }
+            return Ok();
         }
 
         [HttpPost, Authorize(Roles = "Administrator")]

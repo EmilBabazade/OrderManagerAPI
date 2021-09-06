@@ -39,8 +39,9 @@ namespace OrderManagerAPI
             {
                 options.AddPolicy(name: AllowedOrigins,
                         builder => {
+                            var frontEndPort = Configuration.GetSection("FrontEndPort");
                             builder
-                                .WithOrigins("http://localhost:8000")
+                                .WithOrigins($"http://localhost:{frontEndPort.Value}")
                                 .AllowAnyHeader()
                                 .AllowCredentials()
                                 .AllowAnyMethod()
@@ -97,10 +98,10 @@ namespace OrderManagerAPI
             
 
             app.UseRouting();
-            if (env.IsDevelopment())
-            {
+            //if (env.IsDevelopment())
+            //{
                 app.UseCors(AllowedOrigins);
-            }
+            //}
             app.UseAuthentication();
             app.UseAuthorization();
 
